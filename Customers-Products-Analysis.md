@@ -26,7 +26,7 @@ Below are the questions we want to answer for this project.
 
 ## Database Summary
 
-This project made us of DB Browser for SQLite to handle the databases and were queried with different codes to obtain insights necessary to increase donations.
+This project made use of DB Browser for SQLite to handle the databases and were queried with different codes to obtain insights.
 
 ![Alt text](image/database_summary.PNG)
  
@@ -196,11 +196,11 @@ SELECT AVG(mc.revenue) AS lyf_tym_val
 The conclusion conveys the three aims of this project:
 1. *Which products should we order more of or less of?*
 
-   Analysing the query results of comparing low stock with product performance we can see that, 6 out 10 cars belong to 'Classic Cars' product line. They sell frequently with high product performance. As such we should re-stock these frequently. 
+   Analyzing the query results of comparing low stock with product performance we can see that, 6 out 10 cars belong to 'Classic Cars' product line. They sell frequently with high product performance. As such we should re-stock these frequently. 
 
 2. *How should we tailor marketing and communication strategies to customer behaviors?*
   
-     Analysing the query results of top VIP customers and top least-engaged customers in terms of revenu or profit generation,
+     Analyzing the query results of top VIP customers and top least-engaged customers in terms of revenu or profit generation,
               we need to offer loyalty rewards and priority services for our top VIP customers to retain them.
 			  Also for top least-engaged customers we need to solicit feedback to better understand their preferences, 
 			  expected pricing, discount and offers to increase our sales.
