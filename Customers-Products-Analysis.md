@@ -2,42 +2,40 @@
 
 ## Table of contents
 - [Introduction](#introduction)
-   - [Schema diagram](#schema-diagram)
-- [Database summary](#database-summary)
-- [Analysis](#analysis)
-- [Conclusion](#conclusion)
+- [Data & Tools](#data-&-tools)
+	- [Schema diagram](#schema-diagram)
+	- [Database Summary](#database-summary)
+- [Analysis Highlights](#analysis-highlights)
+- [Key Insights & Recommendations](#key-insights-&-recommendations)
 
 
 ---
 
 ## Introduction
-The goal of this project is to analyze data from a sales records database for scale model cars and extract information for decision-making.
 
-Below are the questions we want to answer for this project. 
+This project analyzes sales data from a scale model car retailer using a SQLite database to support data-informed decision-making. The key questions addressed are:
 
-1. Which products should we order more of or less of?
-2. How should we tailor marketing and communication strategies to customer behaviors?
-3. How much can we spend on acquiring new customers?
+1. Which products warrant restocking or reduction?
+2. How can marketing and communication strategies be tailored to customer behavior?
+3. What is a sustainable spend threshold for acquiring new customers?
 
+## Data & Tools
+
+- **Database:** Handled via DB Browser for SQLite.
+- **Queries:** Custom SQL scripts were used to extract insights from orders, products, and customer data.
 
 ### Schema diagram
 ![Alt text](image/database_schema.PNG)
 
-
-## Database Summary
-
-This project made use of DB Browser for SQLite to handle the databases and were queried with different codes to obtain insights.
-
+### Database Summary
 ![Alt text](image/database_summary.PNG)
  
                
-## Analysis
-### **1. Products to order more of or less of**
+## Analysis Highlights
 
-This refers to inventory reports, including low stock(i.e. product in demand) and product performance. This will optimize the supply and the user experience by preventing the best-selling products from going out-of-stock.
+### 1. Restocking Strategy
 
-#### Low stock
-The low stock represents the quantity of the sum of each product ordered divided by the quantity of product in stock. We can consider the ten highest rates. These will be the top ten products that are almost out-of-stock or completely out-of-stock.
+- **Low Stock Ratio:** Calculated as ordered quantity divided by in-stock quantity; high values indicate products nearing depletion.
 
 ``` 
 SELECT productCode, 
@@ -52,8 +50,7 @@ SELECT productCode,
 ![Alt text](image/low_stock.PNG)
 
 
-#### Product performance
-The product performance represents the sum of sales per product.
+- **Product Performance:** Measured by total sales revenue per product (quantityOrdered × priceEach).
 
 ```
 SELECT productCode, 
@@ -65,8 +62,8 @@ SELECT productCode,
 ```
 ![Alt text](image/product_performance.PNG)
 
-#### Priority products for restocking
-Priority products for restocking are those with high product performance that are on the brink of being out of stock.
+
+- **Priority Restock Items:** Identified products that combine strong sales with limited remaining inventory.
 
 ``` 
 WITH
@@ -97,13 +94,10 @@ WITH
 ```
 ![Alt text](image/priority_product_for_restocking.PNG)
 
-
    
-### 2. **Tailoring marketing and communication strategies to customer behaviors**
-This involves categorizing customers: finding the VIP (very important person)customers (that bring in the most profit for the store) and those who are less engaged (customers that bring in less profit).
+### 2. Customer Segmentation for Targeted Engagement
 
-#### Revenue by customer
-How much revenue or profit each customer generates for the store.
+- **Revenue by Customer:** Computed as quantityOrdered × (priceEach − buyPrice) to determine individual profitability.
 
 ``` 
 SELECT o.customerNumber, SUM(quantityOrdered * (priceEach - buyPrice)) AS revenue
@@ -114,11 +108,9 @@ SELECT o.customerNumber, SUM(quantityOrdered * (priceEach - buyPrice)) AS revenu
     ON o.orderNumber = od.orderNumber
  GROUP BY o.customerNumber;
  ``` 
-
- <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
+ 
+- **Top 5 VIP Customers:** Highest revenue-generating customers; Prime candidates for loyalty incentives.
   
-
-#### Top 5 VIP customers 
 ```
 WITH 
 
@@ -141,7 +133,8 @@ SELECT contactLastName, contactFirstName, city, country, mc.revenue
  ```
 ![Alt text](image/top_5_vip_customer.PNG)
 
-#### Top 5 least-engaged customers
+
+- **Bottom 5 Least-Engaged Customers:** Lowest revenue signifiers; focus groups for feedback on pricing and preferences.
 
 ```
 WITH 
@@ -167,10 +160,9 @@ SELECT contactLastName, contactFirstName, city, country, mc.revenue
 ![Alt text](image/top_5_least_engaged_customer.PNG)
 
 
-### 3. **How much can we spend on acquiring new customers**
-To determine how much money we can spend acquiring new customers, we can compute the Customer Lifetime Value (LTV), which represents the average amount of money a customer generates. 
+### 3. Customer Acquisition Budgeting
 
-#### Customer lifetime value
+- **Customer Lifetime Value (LTV):** Derived as the average profit per customer across the dataset.
 
 ```
 WITH 
@@ -191,25 +183,27 @@ SELECT AVG(mc.revenue) AS lyf_tym_val
 ```
 ![Alt text](image/ltv.PNG)
 
+- **Key Insight:** The LTV amount indicates how much can be reasonably spent to acquire each new customer without sacrificing profitability.
 
-## Conclusion
-The conclusion conveys the three aims of this project:
-1. *Which products should we order more of or less of?*
 
-   Analyzing the query results of comparing low stock with product performance we can see that, 6 out 10 cars belong to 'Classic Cars' product line. They sell frequently with high product performance. As such we should re-stock these frequently. 
+## Key Insights & Recommendations
 
-2. *How should we tailor marketing and communication strategies to customer behaviors?*
-  
-     Analyzing the query results of top VIP customers and top least-engaged customers in terms of revenu or profit generation,
-              we need to offer loyalty rewards and priority services for our top VIP customers to retain them.
-			  Also for top least-engaged customers we need to solicit feedback to better understand their preferences, 
-			  expected pricing, discount and offers to increase our sales.
- 
-3. *How much can we spend on acquiring new customers?*
-  
-     The average customer liftime value of our store is $ 39,040. This means for every new customer we make profit of 39,040 dollars. 
-	          We can use this to predict how much we can spend on new customer acquisition, 
-			  at the same time maintain or increase our profit levels.
+### 1. Inventory Focus
+- Six of the top ten restock candidates belong to the "Classic Cars" line; high sales and low stock suggest prioritizing these for restocking.
+
+### 2. Customer Strategy
+
+- **VIP Customers:** Offer loyalty rewards or personalized services to retain high-value customers.
+
+- **Under-engaged Customers:** Engage them with targeted feedback invitations and promotional offers to boost conversion.
+
+### 3. Acquisition Budgeting
+
+The average customer LTV — approximately $39,040, should inform the maximum acquisition cost to ensure profitable growth.
+
+
+
+
 	          
  <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
                         
